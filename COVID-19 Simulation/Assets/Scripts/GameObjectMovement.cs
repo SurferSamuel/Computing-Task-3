@@ -45,7 +45,7 @@ public class GameObjectMovement : MonoBehaviour
 			rb.angularVelocity = 0f;
 			
 			// Reset direction
-			//transform.Rotate(new Vector3(0f, 0f, 0f));
+			transform.Rotate(new Vector3(0f, 0f, 0f));
 			
 			// Pick random direction
 			wander_direction = Random.Range(0f, 360f);
@@ -56,8 +56,8 @@ public class GameObjectMovement : MonoBehaviour
 			// Add force for movement
 			rb.AddForce(transform.up * wander_speed, ForceMode2D.Impulse);
 
-			// Wait for 0.5 seconds
-			yield return new WaitForSeconds(2f);
+			// Wait for random number seconds between 1.0 second and 3.0 seconds
+			yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
 		}
 	}
 }

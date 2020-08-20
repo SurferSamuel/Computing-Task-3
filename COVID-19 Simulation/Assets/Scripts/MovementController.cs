@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameObjectMovement : MonoBehaviour
+public class MovementController : MonoBehaviour
 {
 	private Rigidbody2D rb;
 	
@@ -10,9 +10,6 @@ public class GameObjectMovement : MonoBehaviour
 	
 	private float wander_speed;
 	private float wander_direction;
-	
-	public float xWidth;
-	public float yHeight;
 	
 	// Start is called before the first frame update
     void Start()
@@ -30,12 +27,6 @@ public class GameObjectMovement : MonoBehaviour
 	
 	IEnumerator Wander()
 	{
-		// Pick a random x location on start
-		Transform.position.x = Random.Range(-(xWidth), xWidth);
-		
-		// Pick a random y location on start
-		transform.position.y = Random.Range(-(yHeight), yHeight);
-		
 		// Pick a random direction on start
 		transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));	
 		

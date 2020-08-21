@@ -15,12 +15,10 @@ public class TransmissionRadiusController : MonoBehaviour
 	
 	void OnTriggerEnter2D(Collider2D collisionInfo)
 	{
-		// When a gameObject enters circle radius, the value InTransmissionRange is set 'true' for the gameObject that entered
+		// When a gameObject enters the circle radius, the value InTransmissionRange is set 'true' for the gameObject that entered
 		
 		// Locate and assign the TransmissionObjectController Script of the gameObject that entered within Transmission Range to a new variable
 		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponent(typeof(TransmissionObjectController));
-		
-		
 		
 		// If the current gameObject is infected, call the 'IsInTransmissionRange' function of the TransmissionObjectController script
 		
@@ -37,7 +35,7 @@ public class TransmissionRadiusController : MonoBehaviour
 	
 	void OnTriggerExit2D(Collider2D collisionInfo)
 	{
-		// When a gameObject exits circle radius, the value InTransmissionRange is set 'false' for the gameObject that entered
+		// When a gameObject exits the circle radius, the value InTransmissionRange is set 'false' for the gameObject that entered
 		
 		// Locate and assign the TransmissionObjectController Script of the gameObject that entered within Transmission Range to a new variable
 		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponent(typeof(TransmissionObjectController));

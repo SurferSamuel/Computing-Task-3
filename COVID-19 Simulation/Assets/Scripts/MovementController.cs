@@ -6,7 +6,7 @@ public class MovementController : MonoBehaviour
 {
 	private Rigidbody2D rb;
 	
-	private bool wander_enabled;
+	public bool wander_enabled;
 	
 	private float wander_speed;
 	private float wander_direction;
@@ -58,6 +58,18 @@ public class MovementController : MonoBehaviour
 
 			// Wait for random number seconds between 1.0 second and 3.0 seconds
 			yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
+		}
+	}
+	
+	void Update()
+	{
+		if(wander_enabled != true)
+		{
+			// Reset velocity to 0
+			rb.velocity = Vector2.zero;
+			
+			// Reset angular velocity to 0
+			rb.angularVelocity = 0f;
 		}
 	}
 }

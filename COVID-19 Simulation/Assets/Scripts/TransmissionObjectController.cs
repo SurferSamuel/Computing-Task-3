@@ -6,6 +6,10 @@ public class TransmissionObjectController : MonoBehaviour
 {
 	public bool IsInTransmissionRange;
 	public bool IsInfected;
+	public bool IsDead;
+	public bool IsRecovered;
+	
+	private TransmissionValueController ParentTransmissionValueHolderScript;
 	
 	SpriteRenderer spriteRenderer;
 	
@@ -18,46 +22,49 @@ public class TransmissionObjectController : MonoBehaviour
 		// Assign 'IsInfected' as false on start
 		IsInfected = false;
 		
-		// Assign 'spriteRenderer' as the Object's Sprite Renderer on start
+		// Assign 'IsDead' as false on start
+		IsDead = false;
+		
+		// Assign 'IsRecovered' as false on start
+		IsRecovered = false;
+		
+		// Assign 'spriteRenderer' as the gameObject's Sprite Renderer on start
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		
+		// Assign 'ParentTransmissionValueHolderScript' as the gameObject's parent 'TransmissionValueController' script
+		ParentTransmissionValueHolderScript = (TransmissionValueController) gameObject.GetComponentInParent(typeof(TransmissionValueController));
     }
 	
 	void FixedUpdate()
 	{
-		if(IsInfected)
+		if (IsInfected)
 		{
 			// Change colour of gameObject to red
 			spriteRenderer.color = new Color (255, 0, 0, 255);
 		}
 		
-		if(IsInfected != true)
+		if (IsInfected != true && IsDead != true && IsRecovered != true)
 		{
 			// Change colour of gameObject to white
 			spriteRenderer.color = new Color (255, 255, 255, 255);
 		}
-	}
-	
-    IEnumerator TransmissionTransferMethod()
-	{
-		while(IsInTransmissionRange && IsInfected != true)
+		
+		if (IsDead)
 		{
-			// Pick a random number between 0 - 9
-			var randNum = Random.Range(0, 9);
+			// Change colour of gameObject to grey
+			spriteRenderer.color = new Color (255, 0, 255, 255);
 			
-			// If randNum is 0, assign 'IsInfected' variable as true
-			if (randNum == 0)
-			{
-				IsInfected = true;
-				
-				// End loop
-				yield break;
-			}
+			// Locate and assign Movement script
+			var MovementController = (MovementController) gameObject.GetComponent(typeof(MovementController));
 			
-			// If randNum is not 0, loop again after 0.5 seconds
-			if (randNum != 0)
-			{
-				yield return new WaitForSeconds(0.5f);
-			}
+			// Disable wandering for the movement script
+			MovementController.wander_enabled = false;
+		}
+		
+		if (IsRecovered)
+		{
+			// Change colour of gameObject to blue
+			spriteRenderer.color = new Color (0, 0, 255, 255);
 		}
 	}
 	
@@ -78,5 +85,58 @@ public class TransmissionObjectController : MonoBehaviour
 		
 		// Assign 'InTransmissionRange' as false
 		IsInTransmissionRange = false;
+	}
+	
+    IEnumerator TransmissionTransferMethod()
+	{
+		while(IsInTransmissionRange && IsInfected != true && IsDead != true && IsRecovered != true)
+		{	
+			// Pick a random number between 1 - 100
+			var randNum = Random.Range(1, 100);
+			
+			// If randNum is less than or equal to Transmission Chance, assign 'IsInfected' variable as true
+			if (randNum <= ParentTransmissionValueHolderScript.TransmissionChance)
+			{
+				IsInfected = true;
+				
+				// Start TransmissionDecayMethod
+				StartCoroutine(TransmissionDecayMethod());
+				
+				// End loop
+				yield break;
+			}
+			
+			// If randNum is not 0, loop again after 0.5 seconds
+			if (randNum != 0)
+			{
+				yield return new WaitForSeconds(0.5f);
+			}
+		}
+	}
+	
+	IEnumerator TransmissionDecayMethod()
+	{	
+		// Wait a random amount of time (between 8 and 12 seconds)
+		yield return new WaitForSeconds(Random.Range(8f, 12f));
+		
+		// Assign 'IsInfected' variable as false
+		IsInfected = false;
+		
+		// Pick a random number between 1 - 100
+		var randNum = Random.Range(1, 100);
+			
+		// If randNum is less than or equal to the Death Chance, assign 'IsDead' variable as true
+		if (randNum <= ParentTransmissionValueHolderScript.DeathChance)
+		{
+			IsDead = true;
+			yield break;
+		}
+		
+		// If randNum is greater than to the Death Chance, assign 'IsRecovered' variable as true
+		if (randNum > ParentTransmissionValueHolderScript.DeathChance)
+		{
+			IsRecovered = true;
+			yield break;
+		}
 	}
 }

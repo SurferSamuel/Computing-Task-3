@@ -43,4 +43,13 @@ public class TransmissionRadiusController : MonoBehaviour
 		// Call the 'IsNotInTransmissionRange' function of the TransmissionObjectController script
 		TransmissionObjectControllerScript.NotInTransmissionRange();	
 	}
+	
+	void FixedUpdate()
+	{
+		// Locate and assign the variable 'RootParentTransmissionValueHolder' as the gameObject's value holder script
+		var RootParentTransmissionValueHolderScript = (TransmissionValueController) transform.parent.GetComponentInParent(typeof(TransmissionValueController));
+		
+		// Change transmission circle radius to value in value holder script
+		transmissionCircle.radius = RootParentTransmissionValueHolderScript.TransmissionRadius;
+	}
 }

@@ -7,4 +7,9 @@ public class TransmissionValueController : MonoBehaviour
     [Range(0, 100)]
 	public int TransmissionChance;
 	
+	[Range(0.0f, 10.0f)]
+	public float TransmissionRadius;
+	
+	[Range(0, 100)]
+	public int DeathChance;
 }

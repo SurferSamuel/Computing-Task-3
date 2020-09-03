@@ -10792,6 +10792,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransmissionChance: 10
   TransmissionRadius: 1
+  RecoveryTime: 12
   DeathChance: 4
 --- !u!1 &1077125874
 GameObject:

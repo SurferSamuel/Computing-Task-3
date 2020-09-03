@@ -117,7 +117,7 @@ public class TransmissionObjectController : MonoBehaviour
 	IEnumerator TransmissionDecayMethod()
 	{	
 		// Wait a random amount of time (between 8 and 12 seconds)
-		yield return new WaitForSeconds(Random.Range(8f, 12f));
+		yield return new WaitForSeconds(ParentTransmissionValueHolderScript.RecoveryTime);
 		
 		// Assign 'IsInfected' variable as false
 		IsInfected = false;

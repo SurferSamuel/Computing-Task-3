@@ -11,5 +11,10 @@ public class TransmissionValueController : MonoBehaviour
 	public float TransmissionRadius;
 	
 	[Range(0, 100)]
+	public int RecoveryTime;
+	
+	[Range(0, 100)]
 	public int DeathChance;
+	
+	
 }

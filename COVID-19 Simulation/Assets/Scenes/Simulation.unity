@@ -10821,6 +10821,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10b2782cba544c1a9b1f3a8f0623482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkerEnabled: 1
+  dataExporter: {fileID: 1070216089}
+  timeStamp: 0
+  infectedCount: 0
+  nonInfectedCount: 0
+  deadCount: 0
+  recoveredCount: 0
 --- !u!1 &1077125874
 GameObject:
   m_ObjectHideFlags: 0

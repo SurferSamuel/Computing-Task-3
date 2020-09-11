@@ -37,7 +37,7 @@ public class DataExporter : MonoBehaviour
 		}
 	}
 	
-	public void addRecord(string timeStamp, string numNotInfected, string numInfected, string numDead)
+	public void addRecord(string timeStamp, string numNotInfected, string numInfected, string numDead, string numRecovered)
 	{
 		try
 		{
@@ -45,7 +45,7 @@ public class DataExporter : MonoBehaviour
 			using (System.IO.StreamWriter file = new System.IO.StreamWriter(@filepath, true))
 			{
 				// Write in line
-				file.WriteLine(timeStamp + "," + numNotInfected + "," + numInfected + "," + numDead);
+				file.WriteLine(timeStamp + "," + numNotInfected + "," + numInfected + "," + numDead + "," + numRecovered);
 			}
 		}
 		

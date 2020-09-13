@@ -10792,6 +10792,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc29234e2a96041e38be15f858c1fc6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  populationCheckerScript: {fileID: 1070216090}
+  StartTrigger: 0
   TransmissionChance: 10
   TransmissionRadius: 1
   RecoveryTime: 12

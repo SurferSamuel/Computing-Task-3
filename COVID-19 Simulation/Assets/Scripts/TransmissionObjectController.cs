@@ -100,7 +100,7 @@ public class TransmissionObjectController : MonoBehaviour
 				IsInfected = true;
 				
 				// Start TransmissionDecayMethod
-				StartCoroutine(TransmissionDecayMethod());
+				StartCoroutine(TransmissionRecoveryMethod());
 				
 				// End loop
 				yield break;
@@ -114,7 +114,7 @@ public class TransmissionObjectController : MonoBehaviour
 		}
 	}
 	
-	IEnumerator TransmissionDecayMethod()
+	 public IEnumerator TransmissionRecoveryMethod()
 	{	
 		// Wait a random amount of time (between 8 and 12 seconds)
 		yield return new WaitForSeconds(ParentTransmissionValueHolderScript.RecoveryTime);

@@ -28,8 +28,8 @@ public class TransmissionRadiusController : MonoBehaviour
 		// If the current gameObject is infected
 		if (ParentTransmissionObjectControllerScript.IsInfected == true)
 		{
-			// Call the 'IsInTransmissionRange' function of the TransmissionObjectController script of the object that entered the Transmission Range
-			TransmissionObjectControllerScript.InTransmissionRange();
+			// Call the 'IsInTransmissionRange' function of the TransmissionObjectController script of the object that entered the Transmission Range, and also pass on the name of the parent to this object
+			TransmissionObjectControllerScript.InTransmissionRange(transform.parent.name);
 		}
 	}
 	

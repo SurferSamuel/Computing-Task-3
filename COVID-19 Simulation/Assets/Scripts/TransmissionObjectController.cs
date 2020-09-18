@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TransmissionObjectController : MonoBehaviour
 {
+	// The EffectiveReproductionNumber used for calculations in EffectiveReproductionNumberCalculator
+	public int r;
+	
 	public bool IsInTransmissionRange;
 	public bool IsInfected;
 	public bool IsDead;
@@ -16,7 +19,10 @@ public class TransmissionObjectController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Assign 'InTransmissionRange' as false on start
+        // Assign EffectiveReproductionNumber as 0 on start
+		r = 0;
+		
+		// Assign 'InTransmissionRange' as false on start
 		IsInTransmissionRange = false;
 		
 		// Assign 'IsInfected' as false on start
@@ -68,7 +74,7 @@ public class TransmissionObjectController : MonoBehaviour
 		}
 	}
 	
-	public void InTransmissionRange()
+	public void InTransmissionRange(string infectedName)
 	{	
 		// This function is called from the TransmissionRadiusContoller Script
 		
@@ -76,7 +82,7 @@ public class TransmissionObjectController : MonoBehaviour
 		IsInTransmissionRange = true;
 		
 		// Start coroutine 'TransmissionTransferMethod'
-		StartCoroutine(TransmissionTransferMethod());
+		StartCoroutine(TransmissionTransferMethod(infectedName));
 	}
 	
 	public void NotInTransmissionRange()
@@ -87,7 +93,7 @@ public class TransmissionObjectController : MonoBehaviour
 		IsInTransmissionRange = false;
 	}
 	
-    IEnumerator TransmissionTransferMethod()
+    IEnumerator TransmissionTransferMethod(string rootName)
 	{
 		while(IsInTransmissionRange && IsInfected != true && IsDead != true && IsRecovered != true)
 		{	
@@ -101,6 +107,15 @@ public class TransmissionObjectController : MonoBehaviour
 				
 				// Start TransmissionDecayMethod
 				StartCoroutine(TransmissionRecoveryMethod());
+				
+				// Find and assign the gameObject that infected this object - the root object
+				var rootObject = GameObject.Find("/" + transform.parent.name + "/" + rootName);
+				
+				// Find and assign the root object's transmissionObjectControllerScript
+				var rootObjectScript = (TransmissionObjectController) rootObject.GetComponent(typeof(TransmissionObjectController));
+				
+				// Add one to the counter of the root object's transmissionObjectControllerScript  EffectiveReproductionNumber.
+				rootObjectScript.r += 1;
 				
 				// End loop
 				yield break;

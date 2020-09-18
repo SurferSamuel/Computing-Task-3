@@ -61,7 +61,7 @@ public class DataExporter : MonoBehaviour
 			}
 		}
 
-		// If try returns an error
+		// If 'try' returns an error
 		catch(Exception ex)
 		{
 			// Show error in console
@@ -71,6 +71,18 @@ public class DataExporter : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        Application.OpenURL(filepath);
+		// Open results file when simulation is ended
+		
+		// If platform is Windows
+		if(Application.platform == RuntimePlatform.WindowsEditor)
+		{
+			Application.OpenURL(filepath);
+		}
+			
+		// If platform is Mac
+		if(Application.platform == RuntimePlatform.OSXEditor)
+		{
+			System.Diagnostics.Process.Start(filepath);
+		}
     }
 }

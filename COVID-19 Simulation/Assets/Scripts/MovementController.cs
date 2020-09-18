@@ -31,7 +31,7 @@ public class MovementController : MonoBehaviour
 		transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));	
 		
 		// Pick a random speed on start
-		wander_speed = Random.Range(0.60f, 1.40f);
+		wander_speed = Random.Range(0.40f, 0.80f);
 		
 		// Start initial movement
 		rb.AddRelativeForce(transform.up * wander_speed, ForceMode2D.Impulse);

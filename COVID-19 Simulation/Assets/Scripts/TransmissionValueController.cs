@@ -4,22 +4,31 @@ using UnityEngine;
 
 public class TransmissionValueController : MonoBehaviour
 {
-    public PopulationChecker populationCheckerScript;
-
+	[Header("Initiate Spread")]
     public bool StartTrigger = false;
+	
     private bool StartLoopTrigger = true;
 
-    [Range(0, 100)]
+	[Header("Transmission Parameters")]
+	[Range(0, 100)]
 	public int TransmissionChance;
 	
 	[Range(0.0f, 10.0f)]
 	public float TransmissionRadius;
 	
+	[Header("Disease Parameters")]
 	[Range(0, 100)]
 	public int RecoveryTime;
 	
 	[Range(0, 100)]
 	public int DeathChance;
+	
+	[Header("Human Parameters")]
+	[Range(0.0f, 2.0f)]
+	public float SocialDistancingDistance;
+	
+	[HideInInspector]
+	public PopulationChecker populationCheckerScript;
 
     void Update()
     {

@@ -6,10 +6,11 @@ public class TransmissionValueController : MonoBehaviour
 {
 	[Header("Initiate Spread")]
     public bool StartTrigger = false;
-	
     private bool StartLoopTrigger = true;
+    [Range(0.0f, 10.0f)]
+    public float SquareBorderRadius;
 
-	[Header("Transmission Parameters")]
+    [Header("Transmission Parameters")]
 	[Range(0, 100)]
 	public int TransmissionChance;
 	
@@ -22,12 +23,17 @@ public class TransmissionValueController : MonoBehaviour
 	
 	[Range(0, 100)]
 	public int DeathChance;
-	
-	[Header("Human Parameters")]
-	[Range(0.0f, 2.0f)]
+
+    [Header("Human Parameters")]
+    public bool SocialDistancing;
+    [Range(0, 100)]
+    public int SocialDistancingFactor;
+    [Range(0.0f, 2.0f)]
 	public float SocialDistancingDistance;
-	
-	[HideInInspector]
+    [Range(0.0f, 10.0f)]
+    public float SocialDistancingSpeed;
+
+    [HideInInspector]
 	public PopulationChecker populationCheckerScript;
 
     void Update()

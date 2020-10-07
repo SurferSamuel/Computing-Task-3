@@ -18,7 +18,7 @@ public class TransmissionRadiusController : MonoBehaviour
 		// When a gameObject enters the circle radius, the value InTransmissionRange is set 'true' for the gameObject that entered
 		
 		// Locate and assign the TransmissionObjectController Script of the gameObject that entered within Transmission Range to a new variable
-		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponent(typeof(TransmissionObjectController));
+		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponentInParent(typeof(TransmissionObjectController));
 		
 		// If the current gameObject is infected, call the 'IsInTransmissionRange' function of the TransmissionObjectController script
 		
@@ -38,7 +38,7 @@ public class TransmissionRadiusController : MonoBehaviour
 		// When a gameObject exits the circle radius, the value InTransmissionRange is set 'false' for the gameObject that entered
 		
 		// Locate and assign the TransmissionObjectController Script of the gameObject that entered within Transmission Range to a new variable
-		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponent(typeof(TransmissionObjectController));
+		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponentInParent(typeof(TransmissionObjectController));
 		
 		// Call the 'IsNotInTransmissionRange' function of the TransmissionObjectController script
 		TransmissionObjectControllerScript.NotInTransmissionRange();	

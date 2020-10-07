@@ -7,22 +7,37 @@ public class MovementController : MonoBehaviour
 	private Rigidbody2D rb;
 	
 	public bool wander_enabled;
-	
-	private float wander_speed;
-	private float wander_direction;
-	
-	// Start is called before the first frame update
-    void Start()
-    {	
-		// Assign rigidbody2D
-		rb = GetComponent<Rigidbody2D>();
-		
-		// Assign wander to be enabled
-		wander_enabled = true;
-		
-		// Start wandering
-		StartCoroutine(Wander());
+    private bool wander_enabled_trigger;
 
+    private float square_radius;
+    private TransmissionValueController ParentTransmissionValueHolderScript;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Assign rigidbody2D
+        rb = GetComponent<Rigidbody2D>();
+
+        // Assign 'ParentTransmissionValueHolderScript' as the gameObject's parent 'TransmissionValueController' script
+        ParentTransmissionValueHolderScript = (TransmissionValueController) gameObject.GetComponentInParent(typeof(TransmissionValueController));
+
+        // Assign 'square_radius' as the value from the holder script
+        square_radius = ParentTransmissionValueHolderScript.SquareBorderRadius;
+
+        // Pick a random position within the border
+        var randPos = new Vector2(Random.Range(square_radius, -(square_radius)) + transform.parent.position.x, Random.Range(square_radius, -(square_radius)) + transform.parent.position.y);
+
+        // Move circle to random position
+        transform.position = randPos;
+
+        // Assign wander to be enabled
+        wander_enabled = true;
+
+        // Assign 'wander_enabled_trigger' as true
+        wander_enabled_trigger = true;
+
+        // Start wandering
+        StartCoroutine(Wander());
     }
 	
 	IEnumerator Wander()
@@ -31,7 +46,7 @@ public class MovementController : MonoBehaviour
 		transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));	
 		
 		// Pick a random speed on start
-		wander_speed = Random.Range(0.40f, 0.80f);
+		var wander_speed = Random.Range(0.40f, 0.80f);
 		
 		// Start initial movement
 		rb.AddRelativeForce(transform.up * wander_speed, ForceMode2D.Impulse);
@@ -48,7 +63,7 @@ public class MovementController : MonoBehaviour
 			transform.Rotate(new Vector3(0f, 0f, 0f));
 			
 			// Pick random direction
-			wander_direction = Random.Range(0f, 360f);
+			var wander_direction = Random.Range(0f, 360f);
 			
 			// Apply direction change
 			transform.Rotate(new Vector3(0f, 0f, wander_direction));
@@ -63,13 +78,25 @@ public class MovementController : MonoBehaviour
 	
 	void Update()
 	{
-		if(wander_enabled != true)
+		if(wander_enabled == false && wander_enabled_trigger != false)
 		{
-			// Reset velocity to 0
-			rb.velocity = Vector2.zero;
+            // Assign 'wander_enabled_trigger' as false
+            wander_enabled_trigger = false;
+
+            // Reset velocity to 0
+            rb.velocity = Vector2.zero;
 			
 			// Reset angular velocity to 0
 			rb.angularVelocity = 0f;
-		}
+        }
+
+        if(wander_enabled == true && wander_enabled_trigger != true)
+        {
+            // Assign 'wander_enabled_trigger' as true
+            wander_enabled_trigger = true;
+
+            // Restart coroutine to wander again
+            StartCoroutine(Wander());
+        }
 	}
 }

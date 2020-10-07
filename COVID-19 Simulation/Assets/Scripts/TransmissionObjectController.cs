@@ -11,8 +11,11 @@ public class TransmissionObjectController : MonoBehaviour
 	public bool IsInfected;
 	public bool IsDead;
 	public bool IsRecovered;
-	
-	private TransmissionValueController ParentTransmissionValueHolderScript;
+
+    // Speed used for social distancing funciton
+    private float speed;
+
+    private TransmissionValueController ParentTransmissionValueHolderScript;
 	
 	SpriteRenderer spriteRenderer;
 	
@@ -72,7 +75,10 @@ public class TransmissionObjectController : MonoBehaviour
 			// Change colour of gameObject to blue
 			spriteRenderer.color = new Color (0, 0, 255, 255);
 		}
-	}
+
+        // Assign 'speed' as the value from the holder scipt
+        speed = ParentTransmissionValueHolderScript.SocialDistancingSpeed;
+    }
 	
 	public void InTransmissionRange(string infectedName)
 	{	
@@ -154,4 +160,10 @@ public class TransmissionObjectController : MonoBehaviour
 			yield break;
 		}
 	}
+
+    public void SocialDistancing(Transform nearest)
+    {
+        // Move the gameObject away from the closest circle that is within the social distancing radius
+        transform.position = Vector2.MoveTowards(transform.position, nearest.position, -1 * speed * Time.deltaTime);
+    }
 }

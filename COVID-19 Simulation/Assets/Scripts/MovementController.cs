@@ -95,6 +95,12 @@ public class MovementController : MonoBehaviour
             // Assign 'wander_enabled_trigger' as true
             wander_enabled_trigger = true;
 
+            // Reset velocity to 0
+            rb.velocity = Vector2.zero;
+
+            // Reset angular velocity to 0
+            rb.angularVelocity = 0f;
+
             // Restart coroutine to wander again
             StartCoroutine(Wander());
         }

@@ -12,32 +12,59 @@ public class MovementController : MonoBehaviour
     private float square_radius;
     private TransmissionValueController ParentTransmissionValueHolderScript;
 
-    // Start is called before the first frame update
+    private bool InstantiateTriggerLoop;
+    private bool MovementTriggerLoop;
+
+    // Start is called on the first frame
     void Start()
     {
         // Assign rigidbody2D
         rb = GetComponent<Rigidbody2D>();
 
         // Assign 'ParentTransmissionValueHolderScript' as the gameObject's parent 'TransmissionValueController' script
-        ParentTransmissionValueHolderScript = (TransmissionValueController) gameObject.GetComponentInParent(typeof(TransmissionValueController));
+        ParentTransmissionValueHolderScript = (TransmissionValueController)gameObject.GetComponentInParent(typeof(TransmissionValueController));
 
         // Assign 'square_radius' as the value from the holder script
         square_radius = ParentTransmissionValueHolderScript.SquareBorderRadius;
 
-        // Pick a random position within the border
-        var randPos = new Vector2(Random.Range(square_radius, -(square_radius)) + transform.parent.position.x, Random.Range(square_radius, -(square_radius)) + transform.parent.position.y);
+        // Assign wander to be disabled before trigger has started
+        wander_enabled = false;
 
-        // Move circle to random position
-        transform.position = randPos;
+        // Assign MovementTriggerLoop to be true before trigger has started
+        MovementTriggerLoop = true;
 
-        // Assign wander to be enabled
-        wander_enabled = true;
+        // Assign InstantiateTriggerLoop to be true before trigger has started
+        InstantiateTriggerLoop = true;
+    }
 
-        // Assign 'wander_enabled_trigger' as true
-        wander_enabled_trigger = true;
+    void FixedUpdate()
+    {
+        if (ParentTransmissionValueHolderScript.InstantiateCircles && InstantiateTriggerLoop)
+        {
+            // Assign InstantiateTriggerLoop as false so it doesn't loop
+            InstantiateTriggerLoop = false;
 
-        // Start wandering
-        StartCoroutine(Wander());
+            // Pick a random position within the border
+            var randPos = new Vector2(Random.Range(square_radius, -(square_radius)) + transform.parent.position.x, Random.Range(square_radius, -(square_radius)) + transform.parent.position.y);
+
+            // Move circle to random position
+            transform.position = randPos;
+        }
+
+        if (ParentTransmissionValueHolderScript.MovementTrigger && MovementTriggerLoop)
+        {
+            // Assign MovementTriggerLoop as false so it doesn't loop
+            MovementTriggerLoop = false;
+
+            // Assign wander to be enabled
+            wander_enabled = true;
+
+            // Assign 'wander_enabled_trigger' as true
+            wander_enabled_trigger = true;
+
+            // Start wandering
+            StartCoroutine(Wander());
+        }
     }
 	
 	IEnumerator Wander()

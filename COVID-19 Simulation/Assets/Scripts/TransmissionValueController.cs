@@ -1,14 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TransmissionValueController : MonoBehaviour
-{	
+{
 
-	// All values used throughout the simulation is stored here
+    // All values used throughout the simulation is stored here
 
-	[Header("Initiate Spread")]
-    public bool StartTrigger = false;
+    [Header("Initiate Spread")]
+    [Range(0, 300)]
+    public int NumberOfCircles;
+    public GameObject CirclePrefab;
+    public bool InstantiateCircles;
+    public bool MovementTrigger = false;
+    public bool DiseaseTrigger = false;
     private bool StartLoopTrigger = true;
     [Range(0.0f, 10.0f)]
     public float SquareBorderRadius;
@@ -33,8 +39,18 @@ public class TransmissionValueController : MonoBehaviour
     public int SocialDistancingFactor;
     [Range(0.0f, 2.0f)]
 	public float SocialDistancingDistance;
-    [Range(0.0f, 10.0f)]
+    [Range(0.0f, 1.0f)]
     public float SocialDistancingSpeed;
+
+    [Header("Sliders")]
+    public GameObject slider1;
+    public GameObject slider2;
+    public GameObject slider3;
+    public GameObject slider4;
+    public GameObject slider5;
+    public GameObject slider6;
+    public GameObject slider7;
+    public GameObject slider8;
 
     [HideInInspector]
 	public PopulationChecker populationCheckerScript;
@@ -43,10 +59,10 @@ public class TransmissionValueController : MonoBehaviour
 
 	// Functions used for the initial disease transmission
 	
-    void Update()
+    void FixedUpdate()
     {
 		// When the StartTrigger is initially clicked
-        if (StartTrigger != false && StartLoopTrigger != false)
+        if (DiseaseTrigger != false && StartLoopTrigger != false)
         {
             // Start function to randomly assign a circle the disease
             AssignInfectant();
@@ -76,13 +92,53 @@ public class TransmissionValueController : MonoBehaviour
         // Start recovery countdown
         TransmissionObjectControllerScript.StartCoroutine("TransmissionRecoveryMethod");
     }
-	
-	
-	
-	// Public functions used to the change values of the variables stored within this script via the UI sliders and toggles
-	
-	public void UIStartTrigger()
+
+
+
+    // Public functions used to the change values of the variables stored within this script via the UI toggles
+
+    public void UIInstantiateCircles()
+    {
+        InstantiateCircles = true;
+
+        var i = 0;
+
+        while (i <= NumberOfCircles)
+        {
+            // Instantiate circles into the sim 
+            Instantiate(CirclePrefab, gameObject.transform.position, Quaternion.identity, gameObject.transform);
+            i += 1;
+        }
+    }
+
+    public void UIMovementTrigger()
+    {
+        MovementTrigger = true;
+    }
+
+	public void UIDiseaseTrigger()
 	{
-		StartTrigger = true;
+        DiseaseTrigger = true;
 	}
+
+    // Update functions used to the change values of the variables stored within this script via the UI sliders
+
+    void Update()
+    {
+        NumberOfCircles = (int)slider1.GetComponent<Slider>().value;
+
+        TransmissionChance = (int)slider2.GetComponent<Slider>().value;
+
+        TransmissionRadius = slider3.GetComponent<Slider>().value;
+
+        RecoveryTime = (int)slider4.GetComponent<Slider>().value;
+
+        DeathChance = (int)slider5.GetComponent<Slider>().value;
+
+        SocialDistancingFactor = (int)slider6.GetComponent<Slider>().value;
+
+        SocialDistancingDistance = slider7.GetComponent<Slider>().value;
+
+        SocialDistancingSpeed = slider8.GetComponent<Slider>().value;
+    }
 }

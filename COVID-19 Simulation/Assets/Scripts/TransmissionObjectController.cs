@@ -19,7 +19,7 @@ public class TransmissionObjectController : MonoBehaviour
 	
 	SpriteRenderer spriteRenderer;
 	
-    // Start is called before the first frame update
+    // Start is called on the first frame
     void Start()
     {
         // Assign EffectiveReproductionNumber as 0 on start

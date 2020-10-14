@@ -44,7 +44,7 @@ public class SocialDistancingRadiusController : MonoBehaviour
         // Change the circleCollider2D radius to the 'radiusDistance'
         circleCollider.radius = radiusDistance;
 
-        if (socialDistancing != true && ParentTransmissionObjectControllerScript.IsDead != true)
+        if (socialDistancing != true && ParentTransmissionObjectControllerScript.IsDead != true && ParentTransmissionValueHolderScript.MovementTrigger != false)
         {
             // Turn wander on
             ParentMovementControllerScript.wander_enabled = true;

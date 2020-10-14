@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TransmissionValueController : MonoBehaviour
-{
+{	
+
+	// All values used throughout the simulation is stored here
+
 	[Header("Initiate Spread")]
     public bool StartTrigger = false;
     private bool StartLoopTrigger = true;
@@ -36,8 +39,13 @@ public class TransmissionValueController : MonoBehaviour
     [HideInInspector]
 	public PopulationChecker populationCheckerScript;
 
+
+
+	// Functions used for the initial disease transmission
+	
     void Update()
     {
+		// When the StartTrigger is initially clicked
         if (StartTrigger != false && StartLoopTrigger != false)
         {
             // Start function to randomly assign a circle the disease
@@ -68,4 +76,13 @@ public class TransmissionValueController : MonoBehaviour
         // Start recovery countdown
         TransmissionObjectControllerScript.StartCoroutine("TransmissionRecoveryMethod");
     }
+	
+	
+	
+	// Public functions used to the change values of the variables stored within this script via the UI sliders and toggles
+	
+	public void UIStartTrigger()
+	{
+		StartTrigger = true;
+	}
 }

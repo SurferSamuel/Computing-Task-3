@@ -69,7 +69,7 @@ public class DataExporter : MonoBehaviour
 		}
 	}
 
-    void OpenResults()
+    void OnApplicationQuit()
     {
 		// Open results file when simulation is ended
 		

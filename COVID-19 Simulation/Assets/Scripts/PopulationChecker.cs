@@ -15,14 +15,22 @@ public class PopulationChecker : MonoBehaviour
 	public int deadCount;
 	public int recoveredCount;
 	
+	private bool circleCheckerTrigger;
+	
     void Start()
 	{
 		// Set timeStamp to 0
 		timeStamp = 0f;
+		
+		// Assign circleCheckerTrigger as false on start
+		circleCheckerTrigger = false;
 	}
 	
 	public IEnumerator CircleChecker()
 	{
+		// Assign circleCheckerTrigger true
+		circleCheckerTrigger = true;
+		
 		while(checkerEnabled != false)
 		{
 			// Reset count
@@ -62,6 +70,18 @@ public class PopulationChecker : MonoBehaviour
 
             // Wait for 0.5 seconds (the refresh rate of the counter)
             yield return new WaitForSeconds(0.5f);
+		}
+	}
+	
+	void FixedUpdate()
+	{
+		if(infectedCount == 0 && circleCheckerTrigger)
+		{	
+			// When no more circles are infected, disable the checker
+			checkerEnabled = false;
+			
+			// Assign circleCheckerTrigger as false
+			circleCheckerTrigger = false;
 		}
 	}
 }

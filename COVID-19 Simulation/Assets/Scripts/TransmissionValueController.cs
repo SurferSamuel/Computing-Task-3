@@ -120,6 +120,11 @@ public class TransmissionValueController : MonoBehaviour
 	{
         DiseaseTrigger = true;
 	}
+	
+	public void UISocialDistancing()
+	{
+		SocialDistancing = true;
+	}
 
     // Update functions used to the change values of the variables stored within this script via the UI sliders
 

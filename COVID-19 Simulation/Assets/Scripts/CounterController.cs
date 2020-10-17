@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class CounterController : MonoBehaviour
 {
 	public GameObject sliderTarget;
-	
-	public bool percentage;
-	
+
+    public int decimalPlaces;
+    public bool percentage;
 	public bool seconds;
 	
     // Update is called once per frame
@@ -32,7 +32,7 @@ public class CounterController : MonoBehaviour
 		else
 		{
 			// Update text to match the value from the slider
-			gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = counterText.ToString("F1");
+			gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = counterText.ToString("F" + decimalPlaces.ToString());
 		}
     }
 }

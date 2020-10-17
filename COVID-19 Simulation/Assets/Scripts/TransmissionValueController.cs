@@ -8,16 +8,22 @@ public class TransmissionValueController : MonoBehaviour
 
     // All values used throughout the simulation is stored here
 
+    [Header("Barrier Radius Parameters")]
+    [Range(0.0f, 10.0f)]
+    public float SquareBorderRadius;
+    [Range(0.0f, 1.0f)]
+    public float CentralBorderRadius;
+
     [Header("Initiate Spread")]
     [Range(0, 300)]
     public int NumberOfCircles;
     public GameObject CirclePrefab;
+    public bool CentralZone;
+    public GameObject CentralBorder;
     public bool InstantiateCircles;
     public bool MovementTrigger = false;
     public bool DiseaseTrigger = false;
     private bool StartLoopTrigger = true;
-    [Range(0.0f, 10.0f)]
-    public float SquareBorderRadius;
 
     [Header("Transmission Parameters")]
 	[Range(0, 100)]
@@ -97,11 +103,29 @@ public class TransmissionValueController : MonoBehaviour
 
     // Public functions used to the change values of the variables stored within this script via the UI toggles
 
+    public void UICentralBorder()
+    {
+        if (CentralZone)
+        {
+            CentralZone = false;
+
+            // Disable the central border
+            CentralBorder.SetActive(false);
+        }
+        else
+        {
+            CentralZone = true;
+            
+            // Enable the central border
+            CentralBorder.SetActive(true);
+        }
+    }
+
     public void UIInstantiateCircles()
     {
         InstantiateCircles = true;
 
-        var i = 0;
+        var i = 1;
 
         while (i <= NumberOfCircles)
         {
@@ -123,8 +147,15 @@ public class TransmissionValueController : MonoBehaviour
 	
 	public void UISocialDistancing()
 	{
-		SocialDistancing = true;
-	}
+        if (SocialDistancing)
+        {
+            SocialDistancing = false;
+        }
+        else
+        {
+            SocialDistancing = true;
+        }
+    }
 
     // Update functions used to the change values of the variables stored within this script via the UI sliders
 

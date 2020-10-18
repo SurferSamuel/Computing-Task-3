@@ -25,8 +25,8 @@ public class TransmissionRadiusController : MonoBehaviour
 		// Locate and assign the TransmissionObjectController Script of the current gameObject to a new variable
 		var ParentTransmissionObjectControllerScript = (TransmissionObjectController) gameObject.GetComponentInParent(typeof(TransmissionObjectController));
 		
-		// If the current gameObject is infected
-		if (ParentTransmissionObjectControllerScript.IsInfected == true)
+		// If the current gameObject is infected and their tags match each other's
+		if (ParentTransmissionObjectControllerScript.IsInfected == true && (collisionInfo.tag == transform.parent.tag))
 		{
 			// Call the 'IsInTransmissionRange' function of the TransmissionObjectController script of the object that entered the Transmission Range, and also pass on the name of the parent to this object
 			TransmissionObjectControllerScript.InTransmissionRange(transform.parent.name);
@@ -39,9 +39,13 @@ public class TransmissionRadiusController : MonoBehaviour
 		
 		// Locate and assign the TransmissionObjectController Script of the gameObject that entered within Transmission Range to a new variable
 		var TransmissionObjectControllerScript = (TransmissionObjectController) collisionInfo.GetComponentInParent(typeof(TransmissionObjectController));
-		
-		// Call the 'IsNotInTransmissionRange' function of the TransmissionObjectController script
-		TransmissionObjectControllerScript.NotInTransmissionRange();	
+
+        // If their tags match each other's
+        if ((collisionInfo.tag == transform.parent.tag))
+        {
+            // Call the 'IsNotInTransmissionRange' function of the TransmissionObjectController script
+            TransmissionObjectControllerScript.NotInTransmissionRange();
+        }	
 	}
 	
 	void FixedUpdate()

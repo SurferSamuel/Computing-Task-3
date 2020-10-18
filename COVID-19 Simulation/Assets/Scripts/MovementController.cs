@@ -5,12 +5,23 @@ using UnityEngine;
 public class MovementController : MonoBehaviour
 {
 	private Rigidbody2D rb;
-	
-	public bool wander_enabled;
+
+    private float t;
+    private float timeToReachTarget;
+    private Vector2 centralZone;
+
+    private float randPosX;
+    private float randPosY;
+
+    private bool MoveToCentralZoneTrigger;
+    private bool MoveOutOfCentralZoneTrigger;
+
+    public bool wander_enabled;
     private bool wander_enabled_trigger;
     private bool socialDistancingTrigger;
 
     private TransmissionValueController ParentTransmissionValueHolderScript;
+    private TransmissionObjectController TransmissionObjectControllerScript;
     private float square_radius;
     private float central_radius;
 
@@ -24,7 +35,10 @@ public class MovementController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         // Assign 'ParentTransmissionValueHolderScript' as the gameObject's parent 'TransmissionValueController' script
-        ParentTransmissionValueHolderScript = (TransmissionValueController)gameObject.GetComponentInParent(typeof(TransmissionValueController));
+        ParentTransmissionValueHolderScript = (TransmissionValueController) gameObject.GetComponentInParent(typeof(TransmissionValueController));
+
+        // Assign 'TransmissionObjectControllerScript' as the gameObject's parent 'TransmissionObjectController' script
+        TransmissionObjectControllerScript = (TransmissionObjectController) gameObject.GetComponentInParent(typeof(TransmissionObjectController));
 
         // Assign 'square_radius' as the value from the holder script
         square_radius = ParentTransmissionValueHolderScript.SquareBorderRadius;
@@ -35,71 +49,23 @@ public class MovementController : MonoBehaviour
         // Assign wander to be disabled before trigger has started
         wander_enabled = false;
 
-        // Assign MovementTriggerLoop to be true before trigger has started
+        // Assign 'MovementTriggerLoop' to be true before trigger has started
         MovementTriggerLoop = true;
 
-        // Assign InstantiateTriggerLoop to be true before trigger has started
+        // Assign 'InstantiateTriggerLoop' to be true before trigger has started
         InstantiateTriggerLoop = true;
-    }
 
-    void FixedUpdate()
-    {
-        if (ParentTransmissionValueHolderScript.InstantiateCircles && InstantiateTriggerLoop)
-        {
-            // Assign InstantiateTriggerLoop as false so it doesn't loop
-            InstantiateTriggerLoop = false;
+        // Assign 'MoveToCentralZoneTrigger' to be false before trigger has started
+        MoveToCentralZoneTrigger = false;
 
-            // Instantiate the circles into the simulation
-            InstantiateCircles();
-        }
+        // Assign 'MoveOutOfCentralZoneTrigger' to be false before trigger has started
+        MoveOutOfCentralZoneTrigger = false;
 
-        if (ParentTransmissionValueHolderScript.MovementTrigger && MovementTriggerLoop)
-        {
-            // Assign MovementTriggerLoop as false so it doesn't loop
-            MovementTriggerLoop = false;
+        // Assign 'centralZone' as the middle of the simulation area
+        centralZone = new Vector2(transform.parent.position.x, transform.parent.position.y);
 
-            // Assign wander to be enabled
-            wander_enabled = true;
-
-            // Assign 'wander_enabled_trigger' as true
-            wander_enabled_trigger = true;
-
-            // Start wandering
-            StartCoroutine(Wander());
-        }
-    }
-
-    void InstantiateCircles()
-    {
-        // If the Central Zone is disabled
-        if (ParentTransmissionValueHolderScript.CentralZone == false)
-        {
-            // Pick a random position within the border
-            var randPosX = Random.Range(square_radius, -(square_radius)) + transform.parent.position.x;
-            var randPosY = Random.Range(square_radius, -(square_radius)) + transform.parent.position.y;
-
-            // Move circle to random position
-            transform.position = new Vector2(randPosX, randPosY);
-        }
-
-        // If the Central Zone is enabled
-        if (ParentTransmissionValueHolderScript.CentralZone)
-        {
-            // Pick a random position within the border, but not including the central zone
-            var randPosX = Random.Range(square_radius, -(square_radius)) + transform.parent.position.x;
-            var randPosY = Random.Range(square_radius, -(square_radius)) + transform.parent.position.y;
-
-            if (randPosX <= central_radius + transform.parent.position.x && randPosX >= -(central_radius) + transform.parent.position.x 
-                && randPosY <= central_radius + transform.parent.position.y && randPosY >= -(central_radius) + transform.parent.position.y)
-            {
-                InstantiateCircles();
-            }
-            else
-            {
-                // Move circle to random position
-                transform.position = new Vector2(randPosX, randPosY);
-            }
-        }
+        // Assign 'timeToReachTarget' as 2 (seconds)
+        timeToReachTarget = 2;
     }
 
     void Update()
@@ -131,6 +97,61 @@ public class MovementController : MonoBehaviour
             rb.angularVelocity = 0f;
         }
 
+        if (MoveToCentralZoneTrigger)
+        {
+            if (t < 1)
+            {
+                // If the MoveToCentralZoneTrigger is true and t is less than 1, move the circle towards the central zone
+                t += Time.deltaTime / timeToReachTarget;
+                transform.position = Vector2.Lerp(transform.position, centralZone, t);
+            }
+            else
+            {
+                // If t >= 1, it must mean the circle has reached the central zone
+
+                // Disable the MoveToCentralZoneTrigger
+                MoveToCentralZoneTrigger = false;
+
+                // Reset the value of t
+                t = 0f;
+
+                // Enable wandering again
+                StartCoroutine(Wander());
+
+                // Start CentralZoneCountdown in the TransmissionObjectControllerScript
+                TransmissionObjectControllerScript.StartCoroutine("CentralZoneCountdown");
+            }
+        }
+
+        if (MoveOutOfCentralZoneTrigger)
+        {
+            if (t < 1)
+            {
+                // If the MoveToCentralZoneTrigger is true and t is less than 1, move the circle towards a random location
+                t += Time.deltaTime / timeToReachTarget;
+                transform.position = Vector2.Lerp(transform.position, new Vector2(randPosX, randPosY), t);
+            }
+            else
+            {
+                // If t >= 1, it must mean the circle has reached the random position
+
+                // Disable the MoveToCentralZoneTrigger
+                MoveOutOfCentralZoneTrigger = false;
+
+                // Reset the value of t
+                t = 0f;
+
+                // Enable wandering again
+                StartCoroutine(Wander());
+
+                // Change tag of the circle to wander
+                gameObject.tag = "Wander";
+
+                // Assign CentralZoneAllocationTrigger as true to allow circle to go to the central zone again
+                TransmissionObjectControllerScript.CentralZoneAllocationTrigger = true;
+            }
+        }
+
         // Notice:
         // There was an issue where if the user turned on then off social distancing the wander mechanics would mess up.
         // What happened was that while social distancing was turned on, the wander coroutine would keep on starting itself.
@@ -140,8 +161,11 @@ public class MovementController : MonoBehaviour
         // Hence the two if statements below provide a fix to the issue by simply stoping all currently running coroutines when the user turns off social distancing,
         // so that there is only one instance where the wander coroutine is running.
 
-        // Although this is a fix, there is still a minor issue. While social distancing is enabled, the wander coroutine will still accumulate (thousands per second). 
+        // Although this is a fix, there is still minor issues. While social distancing is enabled, the wander coroutine will still accumulate (thousands per second). 
         // This is using up unnecessary cpu processing power by calculating thousands of positions per frame, but as of right now it hasn't greatly affected the simulation.
+        // Furthermore the StopAllCoroutines() function in the first if statement will interfer with other coroutines (not just the wander coroutine). Thus, for example, if
+        // the function is called, any other coroutines that are running in the script will be stopped.
+
         // If the issue persists, in the two if statements above include the parameters " && ParentTransmissionValueHolderScript.SocialDistancing == false" for the first
         // and " && ParentTransmissionValueHolderScript.SocialDistancing" for the second - then you can remove the if statements below.
         // Although this will fix the issue, as mentioned before, you'll see that the social distancing mechanics would work as well.
@@ -161,11 +185,100 @@ public class MovementController : MonoBehaviour
             socialDistancingTrigger = true;
         }
     }
-	
-	IEnumerator Wander()
+
+    void FixedUpdate()
+    {
+        if (ParentTransmissionValueHolderScript.InstantiateCircles && InstantiateTriggerLoop)
+        {
+            // Assign InstantiateTriggerLoop as false so it doesn't loop
+            InstantiateTriggerLoop = false;
+
+            // Instantiate the circle into the simulation
+            InstantiateCircle();
+        }
+
+        if (ParentTransmissionValueHolderScript.MovementTrigger && MovementTriggerLoop)
+        {
+            // Assign MovementTriggerLoop as false so it doesn't loop
+            MovementTriggerLoop = false;
+
+            // Assign wander to be enabled
+            wander_enabled = true;
+
+            // Assign 'wander_enabled_trigger' as true
+            wander_enabled_trigger = true;
+
+            // Start wandering
+            StartCoroutine(Wander());
+        }
+    }
+
+    void InstantiateCircle()
+    {
+        // If the Central Zone is disabled
+        if (ParentTransmissionValueHolderScript.CentralZone == false)
+        {
+            // Pick a random position within the border
+            randPosX = Random.Range(square_radius, -(square_radius)) + transform.parent.position.x;
+            randPosY = Random.Range(square_radius, -(square_radius)) + transform.parent.position.y;
+
+            // Move circle to random position
+            transform.position = new Vector2(randPosX, randPosY);
+        }
+
+        // If the Central Zone is enabled
+        if (ParentTransmissionValueHolderScript.CentralZone)
+        {
+            // Pick a random position within the border, but not including the central zone
+            randPosX = Random.Range(square_radius, -(square_radius)) + transform.parent.position.x;
+            randPosY = Random.Range(square_radius, -(square_radius)) + transform.parent.position.y;
+
+            // If random position is inside the central zone
+            if (randPosX <= central_radius + transform.parent.position.x && randPosX >= -(central_radius) + transform.parent.position.x 
+                && randPosY <= central_radius + transform.parent.position.y && randPosY >= -(central_radius) + transform.parent.position.y)
+            {
+                // Loop function until random position is not inside the central zone
+                InstantiateCircle();
+            }
+            else
+            {
+                // Move circle to the random position
+                transform.position = new Vector2(randPosX, randPosY);
+            }
+        }
+    }
+
+    public void MoveToCentralZone()
+    {
+        // Disable wandering
+        wander_enabled = false;
+
+        // Change tag of the circle to central zone
+        gameObject.tag = "Central Zone";
+
+        // Set t as 0
+        t = 0f;
+
+        // Assign MoveToCentralZoneTrigger as true so that the Update funtion will start to move the circle
+        MoveToCentralZoneTrigger = true;
+    }
+
+    public void MoveOutOfCentralZone()
+    {
+        // Disable wandering
+        wander_enabled = false;
+
+        // Set t as 0
+        t = 0f;
+
+        // Assign MoveToCentralZoneTrigger as true so that the Update funtion will start to move the circle
+        MoveOutOfCentralZoneTrigger = true;
+    }
+
+    IEnumerator Wander()
 	{
-		// Pick a random direction on start
-		transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));	
+        // Pick a random direction on start
+        transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));	
 		
 		// Pick a random speed on start
 		var wander_speed = Random.Range(0.40f, 0.80f);

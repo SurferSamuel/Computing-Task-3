@@ -141,6 +141,7 @@ MonoBehaviour:
   IsInfected: 0
   IsDead: 0
   IsRecovered: 0
+  MovementControllerScript: {fileID: 4226838697531185989}
 --- !u!114 &4226838697531185989
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class TransmissionObjectController : MonoBehaviour
 {
-	// The EffectiveReproductionNumber used for calculations in EffectiveReproductionNumberCalculator
-	public int r;
-	
-	public bool IsInTransmissionRange;
-	public bool IsInfected;
-	public bool IsDead;
-	public bool IsRecovered;
+    // The EffectiveReproductionNumber used for calculations in EffectiveReproductionNumberCalculator
+    public int r;
+
+    public bool IsInTransmissionRange;
+    public bool IsInfected;
+    public bool IsDead;
+    public bool IsRecovered;
+
+    // Vairables used for central zone movements
+    [HideInInspector]
+    public bool CentralZoneAllocationTrigger;
+    private bool CentralZoneTriggerLoop;
 
     // Speed used for social distancing funciton
     private float speed;
 
+    private MovementController MovementControllerScript;
     private TransmissionValueController ParentTransmissionValueHolderScript;
 	
-	SpriteRenderer spriteRenderer;
+	private SpriteRenderer spriteRenderer;
 	
     // Start is called on the first frame
     void Start()
@@ -42,8 +48,62 @@ public class TransmissionObjectController : MonoBehaviour
 		
 		// Assign 'ParentTransmissionValueHolderScript' as the gameObject's parent 'TransmissionValueController' script
 		ParentTransmissionValueHolderScript = (TransmissionValueController) gameObject.GetComponentInParent(typeof(TransmissionValueController));
+
+        // Assign 'MovementControllerScript' as the gameObject's child 'MovementController' script
+        MovementControllerScript = (MovementController) gameObject.GetComponentInChildren(typeof(MovementController));
+
+        // Assign 'CentralZoneTriggerLoop' to be true before trigger has started
+        CentralZoneTriggerLoop = true;
+
+        // Assign 'CentralZoneAllocationTrigger' to be true before trigger has started
+        CentralZoneAllocationTrigger = true;
     }
-	
+
+    void Update()
+    {
+        if (ParentTransmissionValueHolderScript.MovementTrigger && ParentTransmissionValueHolderScript.CentralZone && CentralZoneAllocationTrigger)
+        {
+            // Assign CentralZoneAllocationTrigger as false to prevent looping
+            CentralZoneAllocationTrigger = false;
+
+            // Start the CentralZoneAllocation coroutine
+            StartCoroutine(CentralZoneAllocation());
+        }
+    }
+
+    public IEnumerator CentralZoneAllocation()
+    {
+        while (ParentTransmissionValueHolderScript.MovementTrigger && ParentTransmissionValueHolderScript.CentralZone && CentralZoneTriggerLoop && IsDead != true)
+        {
+            // Pick a random number between 1 - 100
+            var randNum = Random.Range(1, 100);
+
+            if (randNum <= ParentTransmissionValueHolderScript.CentralZoneChance)
+            {
+                // Assign CentralZoneTriggerLoop as false so it doesn't loop
+                CentralZoneTriggerLoop = false;
+
+                // Move circle to central zone
+                MovementControllerScript.MoveToCentralZone();
+
+                // End coroutine
+                yield break;
+            }
+
+            // Wait for a random number of seconds (between 0.5 and 3) then loop
+            yield return new WaitForSeconds(Random.Range(0.5f, 3.0f));
+        }
+    }
+
+    public IEnumerator CentralZoneCountdown()
+    {
+        // Wait for a random number of seconds (between 1 and 5)
+        yield return new WaitForSeconds(Random.Range(1.0f, 5.0f));
+
+        // Move circle out of the central zone
+        MovementControllerScript.MoveOutOfCentralZone();
+    }
+
 	void FixedUpdate()
 	{
 		if (IsInfected)
@@ -126,16 +186,13 @@ public class TransmissionObjectController : MonoBehaviour
 				// End loop
 				yield break;
 			}
-			
-			// If randNum is not 0, loop again after 0.5 seconds
-			if (randNum != 0)
-			{
-				yield return new WaitForSeconds(0.5f);
-			}
+
+            // Loop again after 0.5 seconds
+            yield return new WaitForSeconds(0.5f);
 		}
 	}
 	
-	 public IEnumerator TransmissionRecoveryMethod()
+	public IEnumerator TransmissionRecoveryMethod()
 	{	
 		// Wait a random amount of time (between 8 and 12 seconds)
 		yield return new WaitForSeconds(ParentTransmissionValueHolderScript.RecoveryTime);

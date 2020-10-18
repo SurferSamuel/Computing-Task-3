@@ -14,12 +14,16 @@ public class TransmissionValueController : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float CentralBorderRadius;
 
+    [Header("Central Zone Parameters")]
+    public GameObject CentralBorder;
+    public bool CentralZone;
+    [Range(0, 100)]
+    public int CentralZoneChance;
+
     [Header("Initiate Spread")]
     [Range(0, 300)]
     public int NumberOfCircles;
     public GameObject CirclePrefab;
-    public bool CentralZone;
-    public GameObject CentralBorder;
     public bool InstantiateCircles;
     public bool MovementTrigger = false;
     public bool DiseaseTrigger = false;
@@ -57,11 +61,10 @@ public class TransmissionValueController : MonoBehaviour
     public GameObject slider6;
     public GameObject slider7;
     public GameObject slider8;
+    public GameObject slider9;
 
     [HideInInspector]
 	public PopulationChecker populationCheckerScript;
-
-
 
 	// Functions used for the initial disease transmission
 	
@@ -131,6 +134,14 @@ public class TransmissionValueController : MonoBehaviour
         {
             // Instantiate circles into the sim 
             Instantiate(CirclePrefab, gameObject.transform.position, Quaternion.identity, gameObject.transform);
+
+            // Find the instantiated circle
+            var instantiatedCircle = transform.Find("Circle(Clone)");
+
+            // Change name of the instantiated circle
+            instantiatedCircle.name = "Circle(" + i.ToString() + ")";
+
+            // Add 1 to the value of i
             i += 1;
         }
     }
@@ -176,5 +187,7 @@ public class TransmissionValueController : MonoBehaviour
         SocialDistancingDistance = slider7.GetComponent<Slider>().value;
 
         SocialDistancingSpeed = slider8.GetComponent<Slider>().value;
+
+        CentralZoneChance = (int) slider9.GetComponent<Slider>().value;
     }
 }

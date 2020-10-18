@@ -33,7 +33,6 @@ public class EffectiveReproductionNumberCalculator : MonoBehaviour
 		}
 		
 		// Calculate the EffectiveAverageReproductiveNum by dividing the total effectivereproductivenum (EffectiveTempReproductiveNum) by the total number of infected circles (infectedCount)
-		
 		EffectiveAverageReproductiveNum = EffectiveTempReproductiveNum / infectedCount;
     }
 }

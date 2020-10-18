@@ -67,7 +67,7 @@ public class SocialDistancingRadiusController : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collisionInfo)
     {
-        if (socialDistancing != false && ParentTransmissionObjectControllerScript.IsDead != true)
+        if (socialDistancing != false && ParentTransmissionObjectControllerScript.IsDead != true && transform.parent.tag != "Central Zone")
         {
             // Turn off wandering (so it doesn't interfere with the socialDistancing forces)
             ParentMovementControllerScript.wander_enabled = false;
@@ -103,7 +103,7 @@ public class SocialDistancingRadiusController : MonoBehaviour
     void OnTriggerExit2D(Collider2D collisionInfo)
     {
         // If gameObject is not 'dead'
-        if (ParentTransmissionObjectControllerScript.IsDead != true)
+        if (ParentTransmissionObjectControllerScript.IsDead != true && transform.parent.tag != "Central Zone")
         {
             // Turn wander back on
             ParentMovementControllerScript.wander_enabled = true;

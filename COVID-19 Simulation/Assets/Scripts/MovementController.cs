@@ -99,7 +99,7 @@ public class MovementController : MonoBehaviour
 
         if (MoveToCentralZoneTrigger)
         {
-            if (t < 0.1)
+            if (t < 1)
             {
                 // If the MoveToCentralZoneTrigger is true and t is less than 1, move the circle towards the central zone
                 t += Time.deltaTime / timeToReachTarget;
@@ -126,15 +126,15 @@ public class MovementController : MonoBehaviour
 
         if (MoveOutOfCentralZoneTrigger)
         {
-            if (t < 0.1)
+            if (t < 1)
             {
-                // If the MoveToCentralZoneTrigger is true and t is less than 0.1, move the circle towards a random location
+                // If the MoveToCentralZoneTrigger is true and t is less than 1, move the circle towards a random location
                 t += Time.deltaTime / timeToReachTarget;
                 transform.position = Vector2.Lerp(transform.position, new Vector2(randPosX, randPosY), t);
             }
             else
             {
-                // If t >= 0.1, it must mean the circle has reached the random position
+                // If t >= 1, it must mean the circle has reached the random position
 
                 // Disable the MoveToCentralZoneTrigger
                 MoveOutOfCentralZoneTrigger = false;
